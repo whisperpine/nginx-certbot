@@ -128,7 +128,7 @@ Alternatively if you prefer vim, the [nginx.vim](https://github.com/chr4/nginx.v
 If your DNS is provided by cloudflare, be careful of the SSL/TLS encryption mode.
 
 When you provide tls on your origin server,
-the default SSL/TLS encryption mode `Flexible` will lead to `too many redirections error`.
+the default SSL/TLS encryption mode `Flexible` will lead to `xxx redirected you too many times` error.
 
 In this case, you may either switch SSL/TLS encryption mode to `Full`
 or give up tls and only use http on your origin server.
