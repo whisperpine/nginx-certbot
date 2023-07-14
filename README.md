@@ -22,22 +22,29 @@ Be sure that 80 and 443 port is allowed by firewall/security settings.
 
 ## Getting Started
 
-### Config
+### Config nginx
 
 Clone this repository to some place in your server.
+
+Use [helper.sh](helper.sh) to simplify this step (recommended):
+
+```sh
+cd root-path-of-this-repository
+
+#!!! Replace "example.com" with your domain.
+./helper.sh create example.com
+```
+
+Alternatively you can choose to run the following commands:
 
 ```sh
 cd root-path-of-this-repository
 
 cp template/example-com-apply.conf conf.d/example-com-apply.conf
 
-#!!! Replace xxx with your domain and run the follow command.
+#!!! Replace "xxx" with your domain and run the follow command.
 sed -i "s/example.com/xxx/g" conf.d/example-com-apply.conf
-```
 
-### Start nginx
-
-```sh
 # Start nginx service.
 sudo docker compose up -d
 
@@ -52,8 +59,8 @@ The `Welcome to nginx!` printed on the web page indicates we can step forword.
 ### New certificate
 
 ```sh
-#!!! Replace with the real domain name after -d param.
-# Replace with your email after -m param.
+#!!! Replace with the real domain name after -d arg.
+# Replace with your email after -m arg.
 # Add another -m line to include another email address.
 
 sudo docker compose run --rm \
@@ -67,13 +74,24 @@ certbot certonly --webroot \
 
 You should get a success message like "The dry run was successful".
 
+Just run the command above without `--dry-run`, you will received the tls certificates issued by Let's Encrypt.
+
 ### Enable https
 
+Use [helper.sh](helper.sh) to simplify this step (recommended):
+
 ```sh
-# Take care: example-com-renew.conf is not the previous example-com-apply.conf
+#!!! Replace "example.com" with your domain.
+./helper.sh https example.com
+```
+
+Alternatively you can choose to run the following commands:
+
+```sh
+# Take care: example-com-renew.conf is not the previous file.
 cp template/example-com-renew.conf conf.d/example-com-renew.conf
 
-#!!! Replace xxx with your domain and run the follow command.
+#!!! Replace xxx with your domain.
 sed -i "s/example.com/xxx/g" conf.d/example-com-renew.conf
 
 # Delete the previous file used to apply tls certificate.
@@ -121,8 +139,6 @@ The syntax of nginx config files is not widely supported by code editors by defa
 For better dev experience, I recommend to use vscode with
 [NGINX Configuration Language Support](https://marketplace.visualstudio.com/items?itemName=ahmadalli.vscode-nginx-conf) extention installed.
 
-Alternatively if you prefer vim, the [nginx.vim](https://github.com/chr4/nginx.vim) plugin is quite helpful.
-
 ### Cloudflare
 
 If your DNS is provided by cloudflare, be careful of the SSL/TLS encryption mode.
@@ -132,6 +148,13 @@ the default SSL/TLS encryption mode `Flexible` will lead to `xxx redirected you 
 
 In this case, you may either switch SSL/TLS encryption mode to `Full`
 or give up tls and only use http on your origin server.
+
+## QA
+
+Q: Can I manage more than one domain?
+
+A: Yes, just do every thing the same as the first domain without the `Renew` step.
+Cause certbot will renew all the registered domain in a sequence in a run.
 
 ## Reference
 
