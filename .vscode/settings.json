@@ -2,5 +2,6 @@
     "files.associations": {
         "nginx.conf": "nginx",
         "**/conf.d/*.conf": "nginx",
+        "**/template/*.conf": "nginx",
     }
 }

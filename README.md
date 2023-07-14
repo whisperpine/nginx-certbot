@@ -26,14 +26,13 @@ Be sure that 80 and 443 port is allowed by firewall/security settings.
 
 Clone this repository to some place in your server.
 
-Replace every "example.com" with your domain name in [example.com.conf](conf.d/example.com.conf) file.
-
 ```sh
-# File compose.yaml should be here.
 cd root-path-of-this-repository
 
-# Replace xxx with your domain and run the follow command.
-sed -i "s/example.com/xxx/g" conf.d/example.com.conf
+cp template/example-com-apply.conf conf.d/example-com-apply.conf
+
+#!!! Replace xxx with your domain and run the follow command.
+sed -i "s/example.com/xxx/g" conf.d/example-com-apply.conf
 ```
 
 ### Start nginx
@@ -41,6 +40,9 @@ sed -i "s/example.com/xxx/g" conf.d/example.com.conf
 ```sh
 # Start nginx service.
 sudo docker compose up -d
+
+# Check if nginx logs any error.
+sudo docker logs nginx
 ```
 
 Check if everything's ok by visiting http://exmaple.com (replace with the real domain name).
@@ -50,8 +52,9 @@ The `Welcome to nginx!` printed on the web page indicates we can step forword.
 ### New certificate
 
 ```sh
+#!!! Replace with the real domain name after -d param.
 # Replace with your email after -m param.
-# Replace with the real domain name after -d param.
+# Add another -m line to include another email address.
 
 sudo docker compose run --rm \
 certbot certonly --webroot \
@@ -63,6 +66,24 @@ certbot certonly --webroot \
 ```
 
 You should get a success message like "The dry run was successful".
+
+### Enable https
+
+```sh
+# Take care: example-com-renew.conf is not the previous example-com-apply.conf
+cp template/example-com-renew.conf conf.d/example-com-renew.conf
+
+#!!! Replace xxx with your domain and run the follow command.
+sed -i "s/example.com/xxx/g" conf.d/example-com-renew.conf
+
+# Delete the previous file used to apply tls certificate.
+rm conf.d/example-com-apply.conf
+
+# Restart nginx to take effect.
+sudo compose restart
+```
+
+Now you can visit https://exmaple.com (replace with the real domain name) and see the https is enabled.
 
 ### Renew
 
