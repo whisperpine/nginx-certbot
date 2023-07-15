@@ -17,6 +17,8 @@ services:
     image: certbot/certbot
     container_name: certbot
     hostname: certbot
+    depends_on:
+      - nginx
     volumes:
       - acme-challenge:/var/www/certbot/
       - letsencrypt:/etc/letsencrypt/
