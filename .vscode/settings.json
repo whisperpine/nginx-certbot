@@ -4,6 +4,8 @@
         "**/conf.d/*.conf": "nginx",
         "**/template/*.conf": "nginx",
         "LICENSE": "plaintext",
+        ".env": "ini",
+        "template.env": "ini",
     },
     "files.readonlyInclude": {
         "LICENSE": true

@@ -1,9 +1,7 @@
 services:
   nginx:
     image: nginx:stable
-    pull_policy: always
-    container_name: nginx
-    hostname: nginx
+    # pull_policy: always
     restart: always
     ports:
       - 80:80
@@ -15,8 +13,6 @@ services:
       - letsencrypt:/etc/nginx/ssl/:ro
   certbot:
     image: certbot/certbot
-    container_name: certbot
-    hostname: certbot
     depends_on:
       - nginx
     volumes:

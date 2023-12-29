@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-# Helper script for easy startup.
+# Helper script for quick setup.
 
 APPLY_CONFIG_FILE="template/example-com-apply.conf"
 RENEW_CONFIG_FILE="template/example-com-renew.conf"
@@ -10,92 +10,108 @@ TIMESTAMP=$(date +%Y%m%d-%H%M)
 
 help_msg() {
     echo
-    echo "Helper script for easy startup."
+    echo "Usage:"
+    echo " sh $0 [OPTIONS] DOMAIN"
     echo
-    echo "Suported arguments:"
-    echo "  create  [DOMAIN]    create nginx conf for given domain"
-    echo "  https   [DOMAIN]    enable https for given domain"
-    echo "  help                print help message"
+    echo "Exmaples:"
+    echo " sh $0 -a create -d www.exmaple.com"
+    echo " sh $0 -c -a create -d www.exmaple.com"
+    echo " sh $0 -a https -d www.exmaple.com"
     echo
-}
-
-create() {
-    if [ -z $1 ]; then
-        echo "error: please provide a domain name."
-        exit 1
-    fi
-
-    if [ -e "conf.d/$1.conf" ]; then
-        echo
-        echo "backing up the old file:"
-        echo "rename conf.d/$1.conf"
-        echo "as     conf.d/$1.conf.$TIMESTAMP.old"
-        cp conf.d/$1.conf conf.d/$1.conf.$TIMESTAMP.old
-    fi
-
+    echo "Helper script for quick setup."
     echo
-    echo "specified domain:"
-    echo $1
-    echo
-    echo "creating a new file:"
-    echo "conf.d/$1.conf"
-    cp $APPLY_CONFIG_FILE conf.d/$1.conf
-    sed -i "s/example.com/$1/g" conf.d/$1.conf
-    echo
-    echo "restarting docker compose..."
-    sudo docker compose down
-    sudo docker compose up -d
-    echo
-    echo "please check the following link:"
-    echo "http://$1"
+    echo "Options:"
+    echo " -h, --help        display this help"
+    echo " -a [ACTION]       optional values: create, https"
+    echo " -d [DOMAIN]       set domain name (never ignore this option)"
+    echo " -c                use 'docker-compose' instead of 'docker compose'"
     echo
 }
 
-https() {
-    if [ -z $1 ]; then
-        echo "error: please provide a domain name."
-        exit 1
-    fi
+action() {
+    while getopts ":a::d:ch" opt; do
+        case ${opt} in
+        a)
+            ACTION=${OPTARG}
+            ;;
+        c)
+            FLAG_C="C"
+            ;;
+        h)
+            help_msg
+            exit 0
+            ;;
+        d)
+            DOMAIN_NAME=${OPTARG}
+            ;;
+        \?)
+            echo "Invalid option: -${OPTARG}."
+            exit 1
+            ;;
+        :)
+            echo "error: please provide a domain name." >&2
+            ;;
+        esac
+    done
 
     echo
     echo "specified domain:"
-    echo $1
+    echo $DOMAIN_NAME
 
-    if [ -e "conf.d/$1.conf" ]; then
+    if [ -e "conf.d/$DOMAIN_NAME.conf" ]; then
         echo
         echo "backing up the old file:"
-        echo "rename conf.d/$1.conf"
-        echo "as     conf.d/$1.conf.$TIMESTAMP.old"
-        cp conf.d/$1.conf conf.d/$1.conf.$TIMESTAMP.old
+        echo "rename conf.d/$DOMAIN_NAME.conf"
+        echo "as     conf.d/$DOMAIN_NAME.conf.$TIMESTAMP.old"
+        cp conf.d/$DOMAIN_NAME.conf conf.d/$DOMAIN_NAME.conf.$TIMESTAMP.old
     fi
 
     echo
     echo "creating a new file:"
-    echo "conf.d/$1.conf"
-    cp $RENEW_CONFIG_FILE conf.d/$1.conf
-    sed -i "s/example.com/$1/g" conf.d/$1.conf
+    echo "conf.d/$DOMAIN_NAME.conf"
+
+    if [ $ACTION = "create" ]; then
+        cp $APPLY_CONFIG_FILE conf.d/$DOMAIN_NAME.conf
+    elif [ $ACTION = "https" ]; then
+        cp $RENEW_CONFIG_FILE conf.d/$DOMAIN_NAME.conf
+    else
+        echo "-a optional values: create, https" >&2
+        exit 1
+    fi
+
+    sed -i "s/example.com/$DOMAIN_NAME/g" conf.d/$DOMAIN_NAME.conf
+
     echo
     echo "restarting docker compose..."
-    sudo docker compose down
-    sudo docker compose up -d
+    if [ -z ${FLAG_C} ]; then
+        sudo docker compose down
+        sudo docker compose up -d
+    else
+        sudo docker-compose down
+        sudo docker-compose up -d
+    fi
+
     echo
     echo "please check the following link:"
-    echo "https://$1"
+    if [ $ACTION = "create" ]; then
+        echo "http://$DOMAIN_NAME"
+    elif [ $ACTION = "https" ]; then
+        echo "https://$DOMAIN_NAME"
+    fi
     echo
 }
 
-if [ "$1" = "help" ]; then
+case $1 in
+"help")
     help_msg
-elif [ "$1" = "create" ]; then
-    create $2
-elif [ "$1" = "https" ]; then
-    https $2
-elif [ "$1" = "--help" ]; then
+    ;;
+"--help")
     help_msg
-elif [ "$1" = "-h" ]; then
+    ;;
+"")
     help_msg
-elif [ "$1" = "" ]; then
-    help_msg
-else
-    echo "Unsupported arguments."
-fi
+    ;;
+*)
+    action $@
+    ;;
+esac

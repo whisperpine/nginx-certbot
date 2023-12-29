@@ -1,3 +1,6 @@
 /certbot
 /conf.d/*
 !/conf.d/default.conf
+/compose.yaml
+/demo.sh
+/.env

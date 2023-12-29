@@ -26,9 +26,10 @@ Use [helper.sh](helper.sh) to simplify this step (recommended):
 
 ```sh
 cd [this-repository]
+cp compose.bridge.yaml compose.yaml
 
 #!!! Replace "example.com" with your domain.
-sh ./helper.sh create example.com
+sh ./helper.sh -a create -d example.com
 ```
 
 Alternatively you can choose to run the following commands:
@@ -67,7 +68,8 @@ certbot certonly --webroot \
 --no-eff-email \
 -m someone@xxx.xxx \
 -d example.com \
---dry-run ```
+--dry-run
+```
 
 You should get a success message like "The dry run was successful".\
 Just run the command above without `--dry-run` to received the certificates issued by Let's Encrypt.
@@ -78,7 +80,7 @@ Use [helper.sh](helper.sh) to simplify this step (recommended):
 
 ```sh
 #!!! Replace "example.com" with your domain.
-sh ./helper.sh https example.com
+sh ./helper.sh -a https -d example.com
 ```
 
 Alternatively you can choose to run the following commands:
