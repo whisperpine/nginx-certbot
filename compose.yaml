@@ -24,5 +24,7 @@ services:
       - letsencrypt:/etc/letsencrypt/
 
 volumes:
-  acme-challenge: {}
-  letsencrypt: {}
+  acme-challenge:
+    name: acme-challenge
+  letsencrypt:
+    name: letsencrypt

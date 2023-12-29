@@ -8,20 +8,20 @@ Inspired by:
 
 ### Server
 
-Add a DNS record to the public IP address of your server. \
+Add a DNS record to the public IP address of your server.\
 Be sure that 80 and 443 port is allowed by firewall/security settings.
 
 ### Docker
 
-The native package manager of some Linux distributions cannot reach the latest version of docker. \
-In this case, steps need to be taken following this [Docker Installation Document](https://docs.docker.com/engine/install/). \
+The native package manager of some Linux distributions cannot reach the latest version of docker.\
+In this case, steps need to be taken following this [Docker Installation Document](https://docs.docker.com/engine/install/).\
 Make sure command `docker compose` (not `docker-compose`)  is available.
 
 ## Getting Started
 
 ### Config nginx
 
-Clone this repository to some place in your server. \
+Clone this repository to some place in your server.\
 Use [helper.sh](helper.sh) to simplify this step (recommended):
 
 ```sh
@@ -48,7 +48,7 @@ sudo docker compose up -d
 sudo docker logs nginx
 ```
 
-Check if everything's ok by visiting <http://exmaple.com> (replace with the real domain name). \
+Check if everything's ok by visiting <http://exmaple.com> (replace with the real domain name).\
 The `Welcome to nginx!` printed on the web page indicates we can step forword.
 
 ### New certificate
@@ -67,10 +67,9 @@ certbot certonly --webroot \
 --no-eff-email \
 -m someone@xxx.xxx \
 -d example.com \
---dry-run
-```
+--dry-run ```
 
-You should get a success message like "The dry run was successful". \
+You should get a success message like "The dry run was successful".\
 Just run the command above without `--dry-run` to received the certificates issued by Let's Encrypt.
 
 ### Enable https
@@ -109,7 +108,7 @@ To manually renew, simply run the following command:
 sudo docker compose run --rm certbot renew
 ```
 
-In common sense, we want to renew tls certificate automatically. \
+In common sense, we want to renew tls certificate automatically.\
 Let's get there with the help of crontab:
 
 ```sh
@@ -117,12 +116,12 @@ Let's get there with the help of crontab:
 sudo crontab -e
 ```
 
-Add the following line in the crontab config file. \
+Add the following line in the crontab config file.\
 Remember to replace `root-path-of-this-repository` with real path.
 
 ```crontab
 # Renew every 2 months (on the first day of the month).
-0 0 1 */2 * cd root-path-of-this-repository && sudo docker compose run --rm certbot renew
+0 0 1 */2 * cd [this-repository] && sudo docker compose run --rm certbot renew
 ```
 
 ## Recommendations

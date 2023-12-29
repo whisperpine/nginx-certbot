@@ -3,7 +3,7 @@
         "nginx.conf": "nginx",
         "**/conf.d/*.conf": "nginx",
         "**/template/*.conf": "nginx",
-        "LICENSE": "plain text"
+        "LICENSE": "plaintext",
     },
     "files.readonlyInclude": {
         "LICENSE": true
