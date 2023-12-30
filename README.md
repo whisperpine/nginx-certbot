@@ -26,7 +26,6 @@ Use [helper.sh](helper.sh) to simplify this step (recommended):
 
 ```sh
 cd [this-repository]
-cp compose.bridge.yaml compose.yaml
 
 #!!! Replace "example.com" with your domain.
 sh ./helper.sh -a create -d example.com
