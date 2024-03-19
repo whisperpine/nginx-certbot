@@ -21,6 +21,4 @@ services:
 
 volumes:
   acme-challenge:
-    name: acme-challenge
   letsencrypt:
-    name: letsencrypt
