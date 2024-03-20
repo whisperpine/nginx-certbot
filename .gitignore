@@ -1,3 +1,4 @@
-/certbot
+/.env
 /conf.d/*
 !/conf.d/default.conf
+!/conf.d/.conf.template

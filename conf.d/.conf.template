@@ -1,6 +1,3 @@
-# !!! Remember to replace "example.com" with your domain name.
-# !!! Remember to replace "example.com" with your domain name.
-
 server {
     listen 80;
     listen [::]:80;
@@ -20,7 +17,7 @@ server {
 
     location / {
         # This will redirect all the http requests arrived on given domain to https.
-        return 301 https://example.com$request_uri;
+        return 301 https://$server_name$request_uri;
     }
 }
 
@@ -36,8 +33,8 @@ server {
     # and in the "Server" response header field.
     server_tokens off;
 
-    ssl_certificate /etc/nginx/ssl/live/example.com/fullchain.pem;
-    ssl_certificate_key /etc/nginx/ssl/live/example.com/privkey.pem;
+    ssl_certificate /etc/nginx/ssl/live/$server_name/fullchain.pem;
+    ssl_certificate_key /etc/nginx/ssl/live/$server_name/privkey.pem;
 
     location / {
         root /usr/share/nginx/html;

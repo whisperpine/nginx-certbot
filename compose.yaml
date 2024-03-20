@@ -1,4 +1,5 @@
 services:
+
   nginx:
     image: nginx:stable
     # pull_policy: always
@@ -7,17 +8,21 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./conf.d:/etc/nginx/conf.d:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - acme-challenge:/var/www/certbot/:ro
-      - letsencrypt:/etc/nginx/ssl/:ro
+      - ./conf.d:/etc/nginx/conf.d:ro
+      - ./docker-entrypoint.d/dummy-tls.sh:/docker-entrypoint.d/dummy-tls.sh:ro
+      - acme-challenge:/var/www/certbot:ro
+      - letsencrypt:/etc/nginx/ssl
+    environment:
+      DOMAIN_NAMES: ${DOMAIN_NAMES}
+
   certbot:
     image: certbot/certbot
     depends_on:
       - nginx
     volumes:
-      - acme-challenge:/var/www/certbot/
-      - letsencrypt:/etc/letsencrypt/
+      - acme-challenge:/var/www/certbot
+      - letsencrypt:/etc/letsencrypt
 
 volumes:
   acme-challenge:
