@@ -8,10 +8,13 @@ self_sign_tls() {
         echo ":: $TARGET_PATH does not exist."
         echo ":: now creating dummy certificates to avoid Nginx startup failure."
 
-        mkdir -p $TARGET_PATH && cd $TARGET_PATH
+        mkdir -p $TARGET_PATH
+        cd $TARGET_PATH
+
         openssl genrsa -out privkey.pem 2048
         openssl req -new -key privkey.pem -out csr.pem -subj "/O=dummy"
         openssl x509 -req -days 365 -in csr.pem -signkey privkey.pem -out fullchain.pem
+        chmod 644 *
     fi
 }
 

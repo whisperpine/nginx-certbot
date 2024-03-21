@@ -25,6 +25,7 @@ fi
 ######### renew #########<
 
 ######### reload nginx #########<
+sudo $DOCKER_COMPOSE exec nginx chown -R nginx:nginx /etc/nginx/ssl/
 sudo $DOCKER_COMPOSE exec nginx nginx -s reload
 
 if [ $? -ne 0 ]; then
