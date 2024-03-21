@@ -12,7 +12,10 @@ apply)
 renew)
     sh ./shell/renew-tls.sh
     ;;
+cron)
+    sh ./shell/setup-cron.sh
+    ;;
 *)
-    echo "Usage: sh helper.sh [init|apply|renew]"
+    echo "Usage: sh helper.sh [init|apply|renew|cron]"
     ;;
 esac
