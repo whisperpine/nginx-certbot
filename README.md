@@ -2,7 +2,7 @@
 
 Handle HTTPS/TLS/SSL using Nginx, Let's Encrypt and Docker.\
 Inspired by:
-[HTTPS using Nginx and Let's encrypt in Docker - Mindsers Blog](https://mindsers.blog/post/https-using-nginx-certbot-docker/)
+[HTTPS using Nginx and Let's encrypt in Docker - Mindsers Blog](https://mindsers.blog/post/https-using-nginx-certbot-docker/).
 
 ## Prerequisite
 
@@ -13,7 +13,7 @@ Inspired by:
 ## Getting Started
 
 - Create virtual machine and config DNS record.
-- Config environment variables in `.env` file (see [template.env](./template.env)).
+- Config environment variables in `.env` file (see [example.env](./example.env)).
 - Run `sudo docker compose up -d` to start services.
 - Run `sh helper.sh init` to create nginx config.
 - Run `sh helper.sh apply` to apply tls certs.
