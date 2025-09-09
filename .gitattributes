@@ -1,4 +1,4 @@
 * text=auto eol=lf
 
-*.yaml linguist-detectable=true
-*.conf linguist-detectable=true linguist-language=nginx
+conf.d/** linguist-detectable linguist-language=nginx
+nginx.conf linguist-detectable linguist-language=nginx
