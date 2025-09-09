@@ -4,18 +4,18 @@
 
 case $1 in
 init)
-    sh ./shell/template-conf.sh
-    ;;
+  sh ./shell/template-conf.sh
+  ;;
 apply)
-    sh ./shell/apply-tls.sh
-    ;;
+  sh ./shell/apply-tls.sh
+  ;;
 renew)
-    sh ./shell/renew-tls.sh
-    ;;
+  sh ./shell/renew-tls.sh
+  ;;
 cron)
-    sh ./shell/setup-cron.sh
-    ;;
+  sh ./shell/setup-cron.sh
+  ;;
 *)
-    echo "Usage: sh helper.sh [init|apply|renew|cron]"
-    ;;
+  echo "Usage: sh helper.sh [init|apply|renew|cron]"
+  ;;
 esac

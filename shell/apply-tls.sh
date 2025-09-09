@@ -8,31 +8,31 @@
 # echo $LETSENCRYPT_EMAIL
 
 red_echo() {
-    echo -e "\033[31m$@\033[0m"
+  echo -e "\033[31m$@\033[0m"
 }
 green_echo() {
-    echo -e "\033[32m$@\033[0m"
+  echo -e "\033[32m$@\033[0m"
 }
 
 ######### dry-run #########>
 apply_tls_dry_run() {
-    sudo $DOCKER_COMPOSE run --rm \
-        certbot certonly --webroot \
-        --webroot-path /var/www/certbot/ \
-        --agree-tos \
-        --no-eff-email \
-        -m $LETSENCRYPT_EMAIL \
-        -d $1 \
-        --dry-run
-    if [ $? -ne 0 ]; then
-        red_echo "failed to apply tls certificates for:"
-        red_echo "$1"
-        exit 1
-    fi
+  sudo $DOCKER_COMPOSE run --rm \
+    certbot certonly --webroot \
+    --webroot-path /var/www/certbot/ \
+    --agree-tos \
+    --no-eff-email \
+    -m $LETSENCRYPT_EMAIL \
+    -d $1 \
+    --dry-run
+  if [ $? -ne 0 ]; then
+    red_echo "failed to apply tls certificates for:"
+    red_echo "$1"
+    exit 1
+  fi
 }
 
 for DOMAIN_NAME in $DOMAIN_NAMES; do
-    apply_tls_dry_run $DOMAIN_NAME
+  apply_tls_dry_run $DOMAIN_NAME
 done
 ######### dry-run #########<
 
@@ -43,22 +43,22 @@ green_echo "dummy tls certifates have been deleted"
 
 ######### apply #########>
 apply_tls() {
-    sudo $DOCKER_COMPOSE run --rm \
-        certbot certonly --webroot \
-        --webroot-path /var/www/certbot/ \
-        --agree-tos \
-        --no-eff-email \
-        -m $LETSENCRYPT_EMAIL \
-        -d $1
-    if [ $? -ne 0 ]; then
-        red_echo "failed to apply tls certificates for:"
-        red_echo "$1"
-        exit 1
-    fi
+  sudo $DOCKER_COMPOSE run --rm \
+    certbot certonly --webroot \
+    --webroot-path /var/www/certbot/ \
+    --agree-tos \
+    --no-eff-email \
+    -m $LETSENCRYPT_EMAIL \
+    -d $1
+  if [ $? -ne 0 ]; then
+    red_echo "failed to apply tls certificates for:"
+    red_echo "$1"
+    exit 1
+  fi
 }
 
 for DOMAIN_NAME in $DOMAIN_NAMES; do
-    apply_tls $DOMAIN_NAME
+  apply_tls $DOMAIN_NAME
 done
 ######### apply #########<
 
@@ -67,7 +67,7 @@ sudo $DOCKER_COMPOSE exec nginx chown -R nginx:nginx /etc/nginx/ssl/
 sudo $DOCKER_COMPOSE exec nginx nginx -s reload
 
 if [ $? -ne 0 ]; then
-    red_echo ":: failed to reload nginx"
-    exit 1
+  red_echo ":: failed to reload nginx"
+  exit 1
 fi
 ######### reload nginx #########<
