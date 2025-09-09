@@ -1,73 +1,73 @@
 #!/bin/sh
 
-# run this script to apply free tls certs.
+# Run this script to apply free tls certs.
 
-# get env vars.
+# Get env vars.
+# shellcheck disable=SC1091
 . ./.env
 # echo $DOMAIN_NAMES
 # echo $LETSENCRYPT_EMAIL
 
 red_echo() {
-  echo -e "\033[31m$@\033[0m"
+  printf "\033[31m%s\033[0m" "$*"
 }
 green_echo() {
-  echo -e "\033[32m$@\033[0m"
+  printf "\033[32m%s\033[0m" "$*"
 }
 
-######### dry-run #########>
+# ----------------
+# dry-run
+# ----------------
 apply_tls_dry_run() {
-  sudo $DOCKER_COMPOSE run --rm \
+  if ! sudo "$DOCKER_COMPOSE" run --rm \
     certbot certonly --webroot \
     --webroot-path /var/www/certbot/ \
     --agree-tos \
     --no-eff-email \
-    -m $LETSENCRYPT_EMAIL \
-    -d $1 \
-    --dry-run
-  if [ $? -ne 0 ]; then
+    -m "$LETSENCRYPT_EMAIL" \
+    -d "$1" \
+    --dry-run; then
     red_echo "failed to apply tls certificates for:"
     red_echo "$1"
     exit 1
   fi
 }
-
-for DOMAIN_NAME in $DOMAIN_NAMES; do
-  apply_tls_dry_run $DOMAIN_NAME
+# shellcheck disable=SC2153
+for domain_name in $DOMAIN_NAMES; do
+  apply_tls_dry_run "$domain_name"
 done
-######### dry-run #########<
 
-######### rm dummy files #########>
-sudo $DOCKER_COMPOSE exec nginx rm -r /etc/nginx/ssl/live
+# ----------------
+# rm dummy files
+# ----------------
+sudo "$DOCKER_COMPOSE" exec nginx rm -r /etc/nginx/ssl/live
 green_echo "dummy tls certifates have been deleted"
-######### rm dummy files #########<
 
-######### apply #########>
+# ----------------
+# apply
+# ----------------
 apply_tls() {
-  sudo $DOCKER_COMPOSE run --rm \
+  if ! sudo "$DOCKER_COMPOSE" run --rm \
     certbot certonly --webroot \
     --webroot-path /var/www/certbot/ \
     --agree-tos \
     --no-eff-email \
-    -m $LETSENCRYPT_EMAIL \
-    -d $1
-  if [ $? -ne 0 ]; then
+    -m "$LETSENCRYPT_EMAIL" \
+    -d "$1"; then
     red_echo "failed to apply tls certificates for:"
     red_echo "$1"
     exit 1
   fi
 }
-
-for DOMAIN_NAME in $DOMAIN_NAMES; do
-  apply_tls $DOMAIN_NAME
+for domain_name in $DOMAIN_NAMES; do
+  apply_tls "$domain_name"
 done
-######### apply #########<
 
-######### reload nginx #########<
-sudo $DOCKER_COMPOSE exec nginx chown -R nginx:nginx /etc/nginx/ssl/
-sudo $DOCKER_COMPOSE exec nginx nginx -s reload
-
-if [ $? -ne 0 ]; then
+# ----------------
+# reload nginx
+# ----------------
+sudo "$DOCKER_COMPOSE" exec nginx chown -R nginx:nginx /etc/nginx/ssl/
+if ! sudo "$DOCKER_COMPOSE" exec nginx nginx -s reload; then
   red_echo ":: failed to reload nginx"
   exit 1
 fi
-######### reload nginx #########<

@@ -1,35 +1,37 @@
 #!/bin/sh
 
-# run this script to renew tls certs.
+# Run this script to renew tls certs.
 
-# get env vars.
+# Get env vars.
+# shellcheck disable=SC1091
 . ./.env
 # echo $DOMAIN_NAMES
 
-######### dry-run #########>
-sudo $DOCKER_COMPOSE run --rm certbot renew --dry-run
+red_echo() {
+  printf "\033[31m%s\033[0m" "$*"
+}
 
-if [ $? -ne 0 ]; then
+# ----------------
+# dry-run
+# ----------------
+if ! sudo "$DOCKER_COMPOSE" run --rm certbot renew --dry-run; then
   red_echo ":: failed to renew tls certificates"
   exit 1
 fi
-######### dry-run #########<
 
-######### renew #########>
-sudo $DOCKER_COMPOSE run --rm certbot renew
-
-if [ $? -ne 0 ]; then
+# ----------------
+# renew
+# ----------------
+if ! sudo "$DOCKER_COMPOSE" run --rm certbot renew; then
   red_echo ":: failed to renew tls certificates"
   exit 1
 fi
-######### renew #########<
 
-######### reload nginx #########<
-sudo $DOCKER_COMPOSE exec nginx chown -R nginx:nginx /etc/nginx/ssl/
-sudo $DOCKER_COMPOSE exec nginx nginx -s reload
-
-if [ $? -ne 0 ]; then
+# ----------------
+# reload nginx
+# ----------------
+sudo "$DOCKER_COMPOSE" exec nginx chown -R nginx:nginx /etc/nginx/ssl/
+if ! sudo "$DOCKER_COMPOSE" exec nginx nginx -s reload; then
   red_echo ":: failed to reload nginx"
   exit 1
 fi
-######### reload nginx #########<
