@@ -19,7 +19,7 @@ green_echo() {
 # dry-run
 # ----------------
 apply_tls_dry_run() {
-  if ! sudo "$DOCKER_COMPOSE" run --rm \
+  if ! sudo docker compose run --rm \
     certbot certonly --webroot \
     --webroot-path /var/www/certbot/ \
     --agree-tos \
@@ -40,14 +40,14 @@ done
 # ----------------
 # rm dummy files
 # ----------------
-sudo "$DOCKER_COMPOSE" exec nginx rm -r /etc/nginx/ssl/live
+sudo docker compose exec nginx rm -r /etc/nginx/ssl/live
 green_echo "dummy tls certifates have been deleted"
 
 # ----------------
 # apply
 # ----------------
 apply_tls() {
-  if ! sudo "$DOCKER_COMPOSE" run --rm \
+  if ! sudo docker compose run --rm \
     certbot certonly --webroot \
     --webroot-path /var/www/certbot/ \
     --agree-tos \
@@ -66,8 +66,8 @@ done
 # ----------------
 # reload nginx
 # ----------------
-sudo "$DOCKER_COMPOSE" exec nginx chown -R nginx:nginx /etc/nginx/ssl/
-if ! sudo "$DOCKER_COMPOSE" exec nginx nginx -s reload; then
+sudo docker compose exec nginx chown -R nginx:nginx /etc/nginx/ssl/
+if ! sudo docker compose exec nginx nginx -s reload; then
   red_echo ":: failed to reload nginx"
   exit 1
 fi

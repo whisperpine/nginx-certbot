@@ -14,7 +14,7 @@ red_echo() {
 # ----------------
 # dry-run
 # ----------------
-if ! sudo "$DOCKER_COMPOSE" run --rm certbot renew --dry-run; then
+if ! sudo docker compose run --rm certbot renew --dry-run; then
   red_echo ":: failed to renew tls certificates"
   exit 1
 fi
@@ -22,7 +22,7 @@ fi
 # ----------------
 # renew
 # ----------------
-if ! sudo "$DOCKER_COMPOSE" run --rm certbot renew; then
+if ! sudo docker compose run --rm certbot renew; then
   red_echo ":: failed to renew tls certificates"
   exit 1
 fi
@@ -30,8 +30,8 @@ fi
 # ----------------
 # reload nginx
 # ----------------
-sudo "$DOCKER_COMPOSE" exec nginx chown -R nginx:nginx /etc/nginx/ssl/
-if ! sudo "$DOCKER_COMPOSE" exec nginx nginx -s reload; then
+sudo docker compose exec nginx chown -R nginx:nginx /etc/nginx/ssl/
+if ! sudo docker compose exec nginx nginx -s reload; then
   red_echo ":: failed to reload nginx"
   exit 1
 fi
