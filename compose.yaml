@@ -1,5 +1,4 @@
 services:
-
   nginx:
     image: nginx:stable
     # pull_policy: always
